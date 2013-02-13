@@ -4,6 +4,7 @@
  * SSG B748 PLUGIN
  *
  * Copyright (c) 2013 Péricles Lopes Machado <pericles.raskolnikoff@gmail.com>
+ *					  -- Supercritical Simulation Group
  */
 
 #ifndef _FMC_H_
@@ -28,6 +29,7 @@
 //================================================================================================//
 /*PLUGIN DESCRIPTION */
 static const char* PluginName = "SSG B748";
+static const char* PluginNameLog = "SSG_B748_log.txt";
 static const char* PluginSig = "SSG.B748.fmc";
 static const char* PluginDesc =
 		"SSG B748 by Pericles L. Machado "

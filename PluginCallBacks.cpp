@@ -4,6 +4,7 @@
  * SSG B748 PLUGIN
  *
  * Copyright (c) 2013 Péricles Lopes Machado <pericles.raskolnikoff@gmail.com>
+ *					  -- Supercritical Simulation Group
  */
 
 #include "PluginCallBacks.h"
@@ -22,19 +23,6 @@ void  PluginSetFloat(void* inRefcon, float inValue)
 {
 	float* my_var = static_cast<float*>(inRefcon);
 	*my_var = inValue;
-}
-
-
-float	PluginFlightLoopCallback(
-	float inElapsedSinceLastCall,
-	float inElapsedTimeSinceLastFlightLoop,
-	int inCounter,
-	void* inRefcon)
-{
-	/* Do calculation*/
-	PluginCalc();
-
-	return 1.0;
 }
 
 

@@ -4,6 +4,7 @@
  * SSG B748 PLUGIN
  *
  * Copyright (c) 2013 Péricles Lopes Machado <pericles.raskolnikoff@gmail.com>
+ *					  -- Supercritical Simulation Group
  */
 
 #ifndef _UTILS_H_

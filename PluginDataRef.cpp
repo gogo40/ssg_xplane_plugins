@@ -4,44 +4,30 @@
  * SSG B748 PLUGIN
  *
  * Copyright (c) 2013 Péricles Lopes Machado <pericles.raskolnikoff@gmail.com>
+ *					  -- Supercritical Simulation Group
  */
 
 #include "PluginDataRef.h"
 #include "PluginCallBacks.h"
 
-//================================================================================================//
-/*
-PLUGIN DATA
-*/
-/* Data refs we will record. */
-PluginDataRef g_plugin_dataref;
-
-
-//================================================================================================//
-/*
-PLUGIN DATA MANAGMENT
-*/
-
-void PluginLoadDataRef()
-{
-	g_plugin_dataref.create();
-	g_plugin_dataref.get();
-}
-
-void PluginUnloadDataRef()
-{
-	g_plugin_dataref.unregister();
-}
-
-void PluginCalc()
-{
-	g_plugin_dataref.calc();
-}
 
 //================================================================================================//
 /*
 PLUGIN DATA REF CLASS
 */
+
+PluginDataRef::PluginDataRef()
+	: XPCProcess()
+{
+	create();
+	get();
+}
+
+PluginDataRef::~PluginDataRef()
+{
+	unregister();
+}
+
 void PluginDataRef::get()
 {
 	m_mach_num = XPLMFindDataRef("sim/flightmodel/misc/machno");
@@ -145,8 +131,9 @@ void PluginDataRef::unregister()
 	}
 }
 
-
-void PluginDataRef::calc()
+void PluginDataRef::DoProcessing(float inElapsedSinceLastCall,
+								 float inElapsedTimeSinceLastFlightLoop,
+								 int inCounter)
 {
 	m_true_spd_data = 661.47 * m_mach_num_data * sqrt((m_temp_OAT_data + 273.15) / 288.15);
 	m_true_mach_data = m_true_spd_data / 38.967854 * sqrt(m_temp_OAT_data + 273.15);
@@ -155,4 +142,3 @@ void PluginDataRef::calc()
 
 	set();
 }
-

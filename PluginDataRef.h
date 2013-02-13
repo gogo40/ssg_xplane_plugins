@@ -4,6 +4,7 @@
  * SSG B748 PLUGIN
  *
  * Copyright (c) 2013 Péricles Lopes Machado <pericles.raskolnikoff@gmail.com>
+ *					  -- Supercritical Simulation Group
  */
 
 #ifndef _PLUGINDATAREF_H_
@@ -19,20 +20,25 @@
 #include <XPLMDataAccess.h>
 #include <XPLMUtilities.h>
 #include <XPLMMenus.h>
+#include <XPCProcessing.h>
 
 //================================================================================================//
 /*PLUGIN DATAREF CLASS*/
-class PluginDataRef {
+class PluginDataRef : public XPCProcess {
 public:
-	PluginDataRef() {}
+	PluginDataRef();
 
+	virtual ~PluginDataRef();
+
+	virtual	void		DoProcessing(
+							float 				inElapsedSinceLastCall,
+							float				inElapsedTimeSinceLastFlightLoop,
+							int 				inCounter);
 	void set();
 	void get();
 	void create();
 	void update();
 	void unregister();
-
-	void calc();
 
 private:
 	/*sim data*/
@@ -60,9 +66,6 @@ private:
 	float m_true_GNDSPD_data;
 };
 
-void PluginLoadDataRef();
-void PluginUnloadDataRef();
-void PluginCalc();
 
 #endif //_PLUGINDATAREF_H_
 

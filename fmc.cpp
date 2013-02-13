@@ -4,6 +4,7 @@
  * SSG B748 PLUGIN
  *
  * Copyright (c) 2013 Péricles Lopes Machado <pericles.raskolnikoff@gmail.com>
+ *					  -- Supercritical Simulation Group
  */
 
 #include "utils.h"
@@ -15,7 +16,9 @@
 /*PLUGIN DATA*/
 /* File to write data to. */
 FILE* g_output_file;
-
+//================================================================================================//
+/* Data refs we will record. */
+PluginDataRef* g_data_ref = 0;
 
 //================================================================================================//
 /*PLUGIN ENTRY*/
@@ -40,7 +43,7 @@ PLUGIN_API int XPluginStart(
 	 * the X-System directory.  Open the file.
 	 */
 	XPLMGetSystemPath(outputPath);
-	strcat(outputPath, "ricardo_plugin.txt");
+	strcat(outputPath, PluginNameLog);
 
 	#if APL && __MACH__
 	Result = ConvertPath(outputPath, outputPath2, sizeof(outputPath));
@@ -53,13 +56,7 @@ PLUGIN_API int XPluginStart(
 	g_output_file = fopen(outputPath, "w");
 
 	/* Find the data refs we want to record. */
-	PluginLoadDataRef();
-
-	/* Register callback. */
-	XPLMRegisterFlightLoopCallback(
-			PluginFlightLoopCallback,
-			1.0,
-			NULL);
+	g_data_ref = new PluginDataRef;
 
 	return 1;
 }
@@ -70,7 +67,10 @@ PLUGIN_API void	XPluginStop(void)
 	XPLMUnregisterFlightLoopCallback(PluginFlightLoopCallback, NULL);
 
 	/* Unregister data */
-	PluginUnloadDataRef();
+	if (g_data_ref) {
+		delete g_data_ref;
+		g_data_ref = 0;
+	}
 
 	/* Close the file */
 	fclose(g_output_file);
