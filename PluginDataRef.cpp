@@ -55,11 +55,11 @@ void PluginDataRef::set()
 void PluginDataRef::create()
 {
 	/* register datarefs */
-	m_true_spd = PluginAddFloat("SSG/AirData/TAS", &m_true_spd_data);
-	m_true_mach = PluginAddFloat("SSG/AirData/mach", &m_true_mach_data);
-	m_true_OAT = PluginAddFloat("SSG/AirData/OAT", &m_true_OAT_data);
-	m_true_IAS = PluginAddFloat("SSG/AirData/IAS", &m_true_IAS_data);
-	m_true_GNDSPD = PluginAddFloat("SSG/AirData/GNDSPD", &m_true_GNDSPD_data);
+	m_true_spd = PluginAddFloat("SSG/AirData/TAS", this);
+	m_true_mach = PluginAddFloat("SSG/AirData/mach", this);
+	m_true_OAT = PluginAddFloat("SSG/AirData/OAT", this);
+	m_true_IAS = PluginAddFloat("SSG/AirData/IAS", this);
+	m_true_GNDSPD = PluginAddFloat("SSG/AirData/GNDSPD", this);
 }
 
 void PluginDataRef::update()
@@ -81,11 +81,11 @@ void PluginDataRef::update()
 void PluginDataRef::unregister()
 {
 	if (m_true_spd) {
-		XPLMUnregisterDataAccessor(m_true_spd);
-		XPLMUnregisterDataAccessor(m_true_mach);
-		XPLMUnregisterDataAccessor(m_true_OAT);
-		XPLMUnregisterDataAccessor(m_true_IAS);
-		XPLMUnregisterDataAccessor(m_true_GNDSPD);
+		PluginRemoveFloat("SSG/AirData/TAS", this);
+		PluginRemoveFloat("SSG/AirData/mach", this);
+		PluginRemoveFloat("SSG/AirData/OAT", this);
+		PluginRemoveFloat("SSG/AirData/IAS", this);
+		PluginRemoveFloat("SSG/AirData/GNDSPD", this);
 	}
 }
 

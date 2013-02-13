@@ -16,6 +16,11 @@
 
 namespace SSG_B748 {
 
+void PluginDataChangedCallback(void* refcon)
+{
+	PluginDataRef* m_data_ref = reinterpret_cast<PluginDataRef*>(refcon);
+}
+
 float PluginGetFloat(void* refcon)
 {
   float* my_var = static_cast<float*>(refcon);
