@@ -9,6 +9,7 @@
 
 #include "utils.h"
 
+namespace SSG_B748 {
 //================================================================================================//
 /*
 UTILS
@@ -30,6 +31,8 @@ int ConvertPath(const char * inPath, char * outPath, int outPathMaxLen)
 	return 0;
 }
 #endif
+
+} // namespace SSG_B748
 
 
 #if IBM

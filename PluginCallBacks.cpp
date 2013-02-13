@@ -13,6 +13,9 @@
 //================================================================================================//
 /*Plugin callback*/
 
+
+namespace SSG_B748 {
+
 float PluginGetFloat(void* refcon)
 {
   float* my_var = static_cast<float*>(refcon);
@@ -25,5 +28,4 @@ void  PluginSetFloat(void* inRefcon, float inValue)
 	*my_var = inValue;
 }
 
-
-
+} //namespace SSG_B748

@@ -27,30 +27,30 @@
 #include <XPLMMenus.h>
 
 //================================================================================================//
-/*PLUGIN DESCRIPTION */
-static const char* PluginName = "SSG B748";
-static const char* PluginNameLog = "SSG_B748_log.txt";
-static const char* PluginSig = "SSG.B748.fmc";
-static const char* PluginDesc =
-		"SSG B748 by Pericles L. Machado "
-		"<pericles.raskolnikoff@gmail.com>\n"
-		" to Supercritical Simulation Group";
+/* PLUGIN ENTRY */
+
+extern "C" PLUGIN_API int XPluginStart(char* outName, char* outSignature, char* outDescription);
+extern "C" PLUGIN_API void XPluginStop(void);
+extern "C" PLUGIN_API int XPluginEnable(void);
+extern "C" PLUGIN_API void XPluginDisable(void);
+extern "C" PLUGIN_API void XPluginReceiveMessage(XPLMPluginID inFrom, long inMessage, void* inParam);
+
+
+
+namespace SSG_B748 {
 
 //================================================================================================//
-/*PLUGIN ENTRY */
-#ifdef __cplusplus
-extern "C" {
-#endif
+/*PLUGIN DESCRIPTION */
 
-PLUGIN_API int XPluginStart(char* outName, char* outSignature, char* outDescription);
-PLUGIN_API void XPluginStop(void);
-PLUGIN_API int XPluginEnable(void);
-PLUGIN_API void XPluginDisable(void);
-PLUGIN_API void XPluginReceiveMessage(XPLMPluginID inFrom, long inMessage, void* inParam);
+const char* PluginName = "SSG B748";
+const char* PluginNameLog = "SSG_B748_log.txt";
+const char* PluginSig = "SSG.B748.fmc";
+const char* PluginDesc =
+		"SSG B748 by Pericles L. Machado "
+		"<pericles.raskolnikoff@gmail.com>\n"
+		"(c) 2013 Supercritical Simulation Group";
 
-#ifdef __cplusplus
-}
-#endif
+} // namespace SSG_B748
 
 
 #endif //_FMC_H_

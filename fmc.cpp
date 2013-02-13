@@ -7,10 +7,14 @@
  *					  -- Supercritical Simulation Group
  */
 
+#include "SSGB748.h"
+
 #include "utils.h"
 #include "fmc.h"
 #include "PluginCallBacks.h"
 #include "PluginDataRef.h"
+
+namespace SSG_B748 {
 
 //================================================================================================//
 /*PLUGIN DATA*/
@@ -20,9 +24,11 @@ FILE* g_output_file;
 /* Data refs we will record. */
 PluginDataRef* g_data_ref = 0;
 
+} // namespace SSG_B748
+
 //================================================================================================//
 /*PLUGIN ENTRY*/
-PLUGIN_API int XPluginStart(
+extern "C" PLUGIN_API int XPluginStart(
 	char* outName,
 	char* outSig,
 	char* outDesc)
@@ -34,16 +40,16 @@ PLUGIN_API int XPluginStart(
 	int Result = 0;
 	#endif
 
-	strcpy(outName, PluginName);
-	strcpy(outSig, PluginSig);
-	strcpy(outDesc, PluginDesc);
+	strcpy(outName, SSG_B748::PluginName);
+	strcpy(outSig, SSG_B748::PluginSig);
+	strcpy(outDesc, SSG_B748::PluginDesc);
 
 	/* Open a file to write to.  We locate the X-System directory
 	 * and then concatenate our file name.  This makes us save in
 	 * the X-System directory.  Open the file.
 	 */
 	XPLMGetSystemPath(outputPath);
-	strcat(outputPath, PluginNameLog);
+	strcat(outputPath, SSG_B748::PluginNameLog);
 
 	#if APL && __MACH__
 	Result = ConvertPath(outputPath, outputPath2, sizeof(outputPath));
@@ -53,40 +59,37 @@ PLUGIN_API int XPluginStart(
 		XPLMDebugString("RicardoPlugin - Unable to convert path\n");
 	#endif
 
-	g_output_file = fopen(outputPath, "w");
+	SSG_B748::g_output_file = fopen(outputPath, "w");
 
 	/* Find the data refs we want to record. */
-	g_data_ref = new PluginDataRef;
+	SSG_B748::g_data_ref = new SSG_B748::PluginDataRef;
 
 	return 1;
 }
 
-PLUGIN_API void	XPluginStop(void)
+extern "C" PLUGIN_API void	XPluginStop(void)
 {
-	/* Unregister the callback */
-	XPLMUnregisterFlightLoopCallback(PluginFlightLoopCallback, NULL);
-
 	/* Unregister data */
-	if (g_data_ref) {
-		delete g_data_ref;
-		g_data_ref = 0;
+	if (SSG_B748::g_data_ref) {
+		delete SSG_B748::g_data_ref;
+		SSG_B748::g_data_ref = 0;
 	}
 
 	/* Close the file */
-	fclose(g_output_file);
+	fclose(SSG_B748::g_output_file);
 }
 
-PLUGIN_API void XPluginDisable(void)
+extern "C" PLUGIN_API void XPluginDisable(void)
 {
-	fflush(g_output_file);
+	fflush(SSG_B748::g_output_file);
 }
 
-PLUGIN_API int XPluginEnable(void)
+extern "C" PLUGIN_API int XPluginEnable(void)
 {
 	return 1;
 }
 
-PLUGIN_API void XPluginReceiveMessage(
+extern "C" PLUGIN_API void XPluginReceiveMessage(
 	XPLMPluginID	inFromWho,
 	long	 inMessage,
 	void* inParam)

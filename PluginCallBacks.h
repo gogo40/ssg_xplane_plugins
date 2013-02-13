@@ -21,12 +21,20 @@
 #include <XPLMUtilities.h>
 #include <XPLMMenus.h>
 
-//================================================================================================//
+
 /*PLUGIN CALLBACKS */
+
+
+namespace SSG_B748 {
+
+
+//================================================================================================//
+
 void PluginDataChangedCallback(void*);
-float PluginFlightLoopCallback(float, float, int, void*);
 float PluginGetFloat(void*);
 void  PluginSetFloat(void*, float);
+
+} // namespace SSG_B748
 
 #endif //_PLUGINCALLBACKS_H_
 

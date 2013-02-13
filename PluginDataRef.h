@@ -15,12 +15,17 @@
 #include <cstring>
 #include <cmath>
 
+
 #include <XPLMPlugin.h>
 #include <XPLMProcessing.h>
 #include <XPLMDataAccess.h>
 #include <XPLMUtilities.h>
 #include <XPLMMenus.h>
 #include <XPCProcessing.h>
+
+#include "SSGB748.h"
+
+namespace SSG_B748 {
 
 //================================================================================================//
 /*PLUGIN DATAREF CLASS*/
@@ -64,8 +69,11 @@ private:
 	float m_true_OAT_data;
 	float m_true_IAS_data;
 	float m_true_GNDSPD_data;
+
+	DISALLOW_COPY_AND_ASSIGN(PluginDataRef);
 };
 
+} // namespace SSG_B748
 
 #endif //_PLUGINDATAREF_H_
 

@@ -9,7 +9,9 @@
 
 #include "PluginDataRef.h"
 #include "PluginCallBacks.h"
+#include "PluginData.h"
 
+namespace SSG_B748 {
 
 //================================================================================================//
 /*
@@ -53,55 +55,11 @@ void PluginDataRef::set()
 void PluginDataRef::create()
 {
 	/* register datarefs */
-	m_true_spd =  XPLMRegisterDataAccessor("SSG/AirData/TAS",
-	xplmType_Float,1,
-	NULL,NULL,
-	PluginGetFloat,PluginSetFloat,
-	NULL,NULL,
-	NULL,NULL,
-	NULL,NULL,
-	NULL,NULL,
-	&m_true_spd_data,NULL);
-
-	m_true_mach =  XPLMRegisterDataAccessor("SSG/AirData/mach",
-	xplmType_Float,1,
-	NULL,NULL,
-	PluginGetFloat,PluginSetFloat,
-	NULL,NULL,
-	NULL,NULL,
-	NULL,NULL,
-	NULL,NULL,
-	&m_true_mach_data,NULL);
-
-	m_true_OAT =  XPLMRegisterDataAccessor("SSG/AirData/OAT",
-	xplmType_Float,1,
-	NULL,NULL,
-	PluginGetFloat,PluginSetFloat,
-	NULL,NULL,
-	NULL,NULL,
-	NULL,NULL,
-	NULL,NULL,
-	&m_true_OAT_data,NULL);
-
-	m_true_IAS =  XPLMRegisterDataAccessor("SSG/AirData/IAS",
-	xplmType_Float,1,
-	NULL,NULL,
-	PluginGetFloat,PluginSetFloat,
-	NULL,NULL,
-	NULL,NULL,
-	NULL,NULL,
-	NULL,NULL,
-	&m_true_IAS_data,NULL);
-
-	m_true_GNDSPD =  XPLMRegisterDataAccessor("SSG/AirData/GNDSPD",
-	xplmType_Float,1,
-	NULL,NULL,
-	PluginGetFloat,PluginSetFloat,
-	NULL,NULL,
-	NULL,NULL,
-	NULL,NULL,
-	NULL,NULL,
-	&m_true_GNDSPD_data,NULL);
+	m_true_spd = PluginAddFloat("SSG/AirData/TAS", &m_true_spd_data);
+	m_true_mach = PluginAddFloat("SSG/AirData/mach", &m_true_mach_data);
+	m_true_OAT = PluginAddFloat("SSG/AirData/OAT", &m_true_OAT_data);
+	m_true_IAS = PluginAddFloat("SSG/AirData/IAS", &m_true_IAS_data);
+	m_true_GNDSPD = PluginAddFloat("SSG/AirData/GNDSPD", &m_true_GNDSPD_data);
 }
 
 void PluginDataRef::update()
@@ -142,3 +100,5 @@ void PluginDataRef::DoProcessing(float inElapsedSinceLastCall,
 
 	set();
 }
+
+} // namespace SSG_B748

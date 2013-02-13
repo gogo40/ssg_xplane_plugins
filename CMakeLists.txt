@@ -5,10 +5,10 @@
 # CMakeLists - CMake recipe
 #
 
-project(SSG_B78)
+project(SSG_B748)
 
 cmake_minimum_required(VERSION 2.6)
-
+include_directories(.)
 
 #
 #Plugin general configuration
@@ -24,14 +24,23 @@ set(CMAKE_SHARED_LIBRARY_SUFFIX "")
 #Plugin flags
 #
 if(APPLE)
-	add_definitions(-DAPL)
+
+	add_definitions(-DIBM=0)
+	add_definitions(-DAPL=1)
+	add_definitions(-DLIN=0)
+
+
 	set(CMAKE_CXX_FLAGS "-fvisibility=hidden -shared")
 	set(CMAKE_SHARED_LINKER_FLAGS "-dynamiclib  suppress")
 
 	set(PLUGIN_LIBS GL GLU)
 
 elseif(MSVC)
-	add_definitions(-DIBM)
+
+	add_definitions(-DIBM=1)
+	add_definitions(-DAPL=0)
+	add_definitions(-DLIN=0)
+
 	if(W64)
 		set(PLUGIN_LIBS
 		"../SDK/Libraries/Win/XPLM_64.lib"
@@ -45,7 +54,11 @@ elseif(MSVC)
 	endif(W64)
 
 elseif(UNIX)
-	add_definitions(-DLIN)
+
+	add_definitions(-DIBM=0)
+	add_definitions(-DAPL=0)
+	add_definitions(-DLIN=1)
+
 	set(PLUGIN_SCRIPT "SSG_B748.names")
 	set(CMAKE_CXX_FLAGS "-fvisibility=hidden -fPIC -O0 -shared -Wall")
 	set(CMAKE_SHARED_LINKER_FLAGS "-fvisibility=hidden -shared -rdynamic -nodefaultlibs -undefined_warning -Wl,--version-script=${PLUGIN_SCRIPT}  -Wl,-soname,lin.xpl")
@@ -97,11 +110,18 @@ set(
 )
 
 set(PLUGIN_SRC
-	utils.cpp
-	PluginDataRef.cpp
-	PluginCallBacks.cpp
-	fmc.cpp
 	${XPLANE_SDK}
+	utils.cpp
+	utils.h
+	PluginData.cpp
+	PluginData.h
+	PluginDataRef.cpp
+	PluginDataRef.h
+	PluginCallBacks.cpp
+	PluginCallBacks.h
+	fmc.cpp
+	fmc.h
+	SSGB748.h
 )
 
 
