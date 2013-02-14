@@ -9,6 +9,8 @@
 
 #include "utils.h"
 
+#include <XPLMUtilities.h>
+
 namespace SSG_B748 {
 //================================================================================================//
 /*
@@ -29,6 +31,17 @@ int ConvertPath(const char * inPath, char * outPath, int outPathMaxLen)
 	CFRelease(url);
 	CFRelease(inStr);
 	return 0;
+}
+#endif
+
+
+#if DEBUGMODE
+void debug(const char *message)
+{
+	XPLMDebugString(PluginName
+					"[DEBUG MESSAGE]:\n");
+	XPLMDebugString(message);
+	XPLMDebugString("\n");
 }
 #endif
 

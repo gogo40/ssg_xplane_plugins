@@ -9,6 +9,14 @@ project(SSG_B748)
 
 cmake_minimum_required(VERSION 2.6)
 include_directories(.)
+include_directories(./MAC)
+include_directories(./MAC/XPLM.framework)
+include_directories(./MAC/XPWidgets.framework)
+
+if (DebugMode)
+	message(STATUS "Compilling in debug mode")
+	add_definitions(-DDEBUGMODE=1)
+endif (DebugMode)
 
 #
 #Plugin general configuration
@@ -19,57 +27,6 @@ set(BUILD_SHARED_LIBS ON)
 set(CMAKE_SHARED_LIBRARY_PREFIX "")
 set(CMAKE_SHARED_LIBRARY_SUFFIX "")
 
-
-#
-#Plugin flags
-#
-if(APPLE)
-
-	add_definitions(-DIBM=0)
-	add_definitions(-DAPL=1)
-	add_definitions(-DLIN=0)
-
-
-	set(CMAKE_CXX_FLAGS "-fvisibility=hidden -shared")
-	set(CMAKE_SHARED_LINKER_FLAGS "-dynamiclib  suppress")
-
-	set(PLUGIN_LIBS GL GLU)
-
-elseif(MSVC)
-
-	add_definitions(-DIBM=1)
-	add_definitions(-DAPL=0)
-	add_definitions(-DLIN=0)
-
-	if(W64)
-		set(PLUGIN_LIBS
-		"../SDK/Libraries/Win/XPLM_64.lib"
-		"../SDK/Libraries/Win/XPWidgets_64.lib")
-
-	else(W64)
-		set(PLUGIN_LIBS
-		"../SDK/Libraries/Win/XPLM.lib"
-		"../SDK/Libraries/Win/XPWidgets.lib")
-
-	endif(W64)
-
-elseif(UNIX)
-
-	add_definitions(-DIBM=0)
-	add_definitions(-DAPL=0)
-	add_definitions(-DLIN=1)
-
-	set(PLUGIN_SCRIPT "SSG_B748.names")
-	set(CMAKE_CXX_FLAGS "-fvisibility=hidden -fPIC -O0 -shared -Wall")
-	set(CMAKE_SHARED_LINKER_FLAGS "-fvisibility=hidden -shared -rdynamic -nodefaultlibs -undefined_warning -Wl,--version-script=${PLUGIN_SCRIPT}  -Wl,-soname,lin.xpl")
-
-	set(PLUGIN_LIBS GL GLU)
-
-endif(APPLE)
-
-include_directories("../SDK/CHeaders/XPLM")
-include_directories("../SDK/CHeaders/Wrappers/")
-include_directories("../SDK/CHeaders/Widgets/")
 
 #
 #Plugin source code
@@ -109,6 +66,64 @@ set(
 	../SDK/CHeaders/Widgets/XPWidgetUtils.h
 )
 
+
+#
+#Plugin flags
+#
+if(APPLE)
+
+	add_definitions(-DIBM=0)
+	add_definitions(-DAPL=1)
+	add_definitions(-DLIN=0)
+
+
+	set(CMAKE_CXX_FLAGS "-fvisibility=hidden  -arch i386")
+
+	set(XPLANE_SDK
+		${XPLANE_SDK}
+		#"MAC/XPLM"
+		#"MAC/XPWidgets"
+		)
+	set(PLUGIN_LIBS "")#GL GLU
+
+elseif(MSVC)
+
+	add_definitions(-DIBM=1)
+	add_definitions(-DAPL=0)
+	add_definitions(-DLIN=0)
+
+	if(W64)
+		set(PLUGIN_LIBS
+		"../SDK/Libraries/Win/XPLM_64.lib"
+		"../SDK/Libraries/Win/XPWidgets_64.lib")
+
+	else(W64)
+		set(PLUGIN_LIBS
+		"../SDK/Libraries/Win/XPLM.lib"
+		"../SDK/Libraries/Win/XPWidgets.lib")
+
+	endif(W64)
+
+elseif(UNIX)
+
+	add_definitions(-DIBM=0)
+	add_definitions(-DAPL=0)
+	add_definitions(-DLIN=1)
+
+	set(PLUGIN_SCRIPT "SSG_B748.names")
+	set(CMAKE_CXX_FLAGS "-fvisibility=hidden -fPIC -O0 -Wall")
+	set(CMAKE_SHARED_LINKER_FLAGS "-fvisibility=hidden -rdynamic -nodefaultlibs -undefined_warning -Wl,--version-script=${PLUGIN_SCRIPT}  -Wl,-soname,lin.xpl -L.")
+
+
+	set(PLUGIN_LIBS GL GLU)
+
+endif(APPLE)
+
+include_directories("../SDK/CHeaders/XPLM")
+include_directories("../SDK/CHeaders/Wrappers/")
+include_directories("../SDK/CHeaders/Widgets/")
+
+
 set(PLUGIN_SRC
 	${XPLANE_SDK}
 	utils.cpp
@@ -119,8 +134,8 @@ set(PLUGIN_SRC
 	PluginDataRef.h
 	PluginCallBacks.cpp
 	PluginCallBacks.h
-	fmc.cpp
-	fmc.h
+	PluginEntry.cpp
+	PluginEntry.h
 	SSGB748.h
 )
 
@@ -129,11 +144,19 @@ set(PLUGIN_SRC
 #Plugin compilation
 #
 if(APPLE)
+	set(FRAMEWORK_DIR
+		MAC/)
 	add_library(mac.xpl
 		SHARED
-		${PLUGIN_SRC}
+		${PLUGIN_SRC})
+
+	find_library(CARBON NAMES Carbon)
+
+	set_target_properties(mac.xpl PROPERTIES
+		COMPILE_FLAGS "-F MAC/XPLM.framework -F MAC/XPWidgets.framework -bundle"
+		LINK_FLAGS "-F MAC/XPLM.framework -framework XPLM  -F MAC/XPWidgets.framework -framework XPWidgets"
 	)
-	target_link_libraries(mac.xpl ${PLUGIN_LIBS})
+	target_link_libraries(mac.xpl ${PLUGIN_LIBS} ${CARBON})
 
 elseif(MSVC)
 	add_library(win.xpl
@@ -157,3 +180,5 @@ endif(APPLE)
 #
 message(STATUS "LINKER FLAGS = ${CMAKE_CXX_FLAGS}")
 message(STATUS "CXX FLAGS = ${CMAKE_SHARED_LINKER_FLAGS}")
+message(STATUS "LIBS = ${PLUGIN_LIBS}")
+message(STATUS "Use -DDebugMode=1 to enable debug messages")

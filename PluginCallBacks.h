@@ -22,12 +22,14 @@
 #include <XPLMMenus.h>
 
 
+
 /*PLUGIN CALLBACKS */
 
 
 namespace SSG_B748 {
 //================================================================================================//
 
+void PluginMenuHandlerCallback(void*, void*);
 void PluginDataChangedCallback(void*);
 float PluginGetFloat(void*);
 void  PluginSetFloat(void*, float);
