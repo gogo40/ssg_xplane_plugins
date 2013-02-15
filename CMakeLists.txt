@@ -107,13 +107,13 @@ elseif(MSVC)
 
 	if(W64)
 		set(PLUGIN_LIBS
-		"../SDK/Libraries/Win/XPLM_64"
-		"../SDK/Libraries/Win/XPWidgets_64")
+		../SDK/Libraries/Win/XPLM_64
+		../SDK/Libraries/Win/XPWidgets_64)
 
 	else(W64)
 		set(PLUGIN_LIBS
-		"../SDK/Libraries/Win/XPLM"
-		"../SDK/Libraries/Win/XPWidgets")
+		../SDK/Libraries/Win/XPLM
+		../SDK/Libraries/Win/XPWidgets)
 	endif(W64)
 
 elseif(UNIX)

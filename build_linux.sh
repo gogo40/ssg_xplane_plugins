@@ -1,7 +1,9 @@
 #!/bin/bash
 rm -rf *~ *.zip *.xpl *.o 
 rm CMakeCache.txt
+
 cmake .
+
 make clean
 make
 
