@@ -1,0 +1,12 @@
+XPCBroadcaster.cpp
+XPCBroadcaster.h
+XPCDisplay.cpp
+XPCDisplay.h
+XPCListener.cpp
+XPCListener.h
+XPCProcessing.cpp
+XPCProcessing.h
+XPCWidgetAttachments.cpp
+XPCWidgetAttachments.h
+XPCWidget.cpp
+XPCWidget.h
