@@ -1,14 +1,14 @@
 /*
- * fmc.h
+ * PluginEntry.h
  *
- * SSG B748 PLUGIN
+ * SSG PLUGIN
  *
  * Copyright (c) 2013 Péricles Lopes Machado <pericles.raskolnikoff@gmail.com>
  *					  -- Supercritical Simulation Group
  */
 
-#ifndef _FMC_H_
-#define _FMC_H_
+#ifndef _PLUGINENTRY_H_
+#define _PLUGINENTRY_H_
 
 #if APL
 #if defined(__MACH__)
@@ -42,5 +42,5 @@ static void PluginInit();
 }
 
 
-#endif //_FMC_H_
+#endif //_PLUGINENTRY_H_
 

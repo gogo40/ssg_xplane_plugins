@@ -8,15 +8,27 @@
 project(SSG_B748)
 
 cmake_minimum_required(VERSION 2.6)
+
 include_directories(.)
 include_directories(./MAC)
 include_directories(./MAC/XPLM.framework)
 include_directories(./MAC/XPWidgets.framework)
 
-if (DebugMode)
+
+
+#
+# Compilling mode
+#
+
+
+if (ReleaseMode)
+	message(STATUS "Compilling in release mode")
+	add_definitions(-DDEBUGMODE=0)
+else (ReleaseMode)
 	message(STATUS "Compilling in debug mode")
 	add_definitions(-DDEBUGMODE=1)
-endif (DebugMode)
+endif (ReleaseMode)
+
 
 #
 #Plugin general configuration
@@ -91,17 +103,17 @@ elseif(MSVC)
 	add_definitions(-DIBM=1)
 	add_definitions(-DAPL=0)
 	add_definitions(-DLIN=0)
+	add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 
 	if(W64)
 		set(PLUGIN_LIBS
-		"../SDK/Libraries/Win/XPLM_64.lib"
-		"../SDK/Libraries/Win/XPWidgets_64.lib")
+		"../SDK/Libraries/Win/XPLM_64"
+		"../SDK/Libraries/Win/XPWidgets_64")
 
 	else(W64)
 		set(PLUGIN_LIBS
-		"../SDK/Libraries/Win/XPLM.lib"
-		"../SDK/Libraries/Win/XPWidgets.lib")
-
+		"../SDK/Libraries/Win/XPLM"
+		"../SDK/Libraries/Win/XPWidgets")
 	endif(W64)
 
 elseif(UNIX)
@@ -123,22 +135,20 @@ include_directories("../SDK/CHeaders/XPLM")
 include_directories("../SDK/CHeaders/Wrappers/")
 include_directories("../SDK/CHeaders/Widgets/")
 
-
 set(PLUGIN_SRC
 	${XPLANE_SDK}
 	utils.cpp
 	utils.h
 	PluginData.cpp
 	PluginData.h
-	PluginDataRef.cpp
-	PluginDataRef.h
+	PluginManagement.cpp
+	PluginManagement.h
 	PluginCallBacks.cpp
 	PluginCallBacks.h
 	PluginEntry.cpp
 	PluginEntry.h
 	SSGB748.h
 )
-
 
 #
 #Plugin compilation
@@ -178,7 +188,22 @@ endif(APPLE)
 #
 #Configuration messages
 #
+message(STATUS "*******************************")
+message(STATUS "SSG PLUGIN CMAKE SCRIPT")
+message(STATUS "*******************************")
+
+message(STATUS "-------------------------------")
+message(STATUS "SETTINGS :")
+message(STATUS "-------------------------------")
+
 message(STATUS "LINKER FLAGS = ${CMAKE_CXX_FLAGS}")
 message(STATUS "CXX FLAGS = ${CMAKE_SHARED_LINKER_FLAGS}")
 message(STATUS "LIBS = ${PLUGIN_LIBS}")
+
+message(STATUS "-------------------------------")
+message(STATUS "OPTIONS :")
+message(STATUS "-------------------------------")
+
 message(STATUS "Use -DDebugMode=1 to enable debug messages")
+message(STATUS "Use -DReleaseMode=1 to disable debug messages")
+

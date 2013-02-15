@@ -1,14 +1,14 @@
 /*
  * PluginDataRef.h
  *
- * SSG B748 PLUGIN
+ * SSG PLUGIN
  *
  * Copyright (c) 2013 Péricles Lopes Machado <pericles.raskolnikoff@gmail.com>
  *					  -- Supercritical Simulation Group
  */
 
-#ifndef _PLUGINDATAREF_H_
-#define _PLUGINDATAREF_H_
+#ifndef _PLUGINMANAGEMENT_H_
+#define _PLUGINMANAGEMENT_H_
 
 
 #include <cstdio>
@@ -23,17 +23,17 @@
 #include <XPLMMenus.h>
 #include <XPCProcessing.h>
 
-#include "SSGB748.h"
+#include "utils.h"
 
-namespace SSG_B748 {
+namespace SSG_PLUGIN {
 
 //================================================================================================//
 /*PLUGIN DATAREF CLASS*/
-class PluginDataRef : public XPCProcess {
+class PluginManagement : public XPCProcess {
 public:
-	PluginDataRef();
+	PluginManagement();
 
-	virtual ~PluginDataRef();
+	virtual ~PluginManagement();
 
 	virtual	void		DoProcessing(
 							float 				inElapsedSinceLastCall,
@@ -44,6 +44,10 @@ public:
 	void create();
 	void update();
 	void unregister();
+
+#if DEBUGMODE
+	void dump();
+#endif
 
 private:
 	/*sim data*/
@@ -70,10 +74,10 @@ private:
 	float m_true_IAS_data;
 	float m_true_GNDSPD_data;
 
-	DISALLOW_COPY_AND_ASSIGN(PluginDataRef);
+	DISALLOW_COPY_AND_ASSIGN(PluginManagement);
 };
 
-} // namespace SSG_B748
+} // namespace SSG_PLUGIN
 
 #endif //_PLUGINDATAREF_H_
 

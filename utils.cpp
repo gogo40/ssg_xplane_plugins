@@ -1,7 +1,7 @@
 /*
  * utils.cpp
  *
- * SSG B748 PLUGIN
+ * SSG PLUGIN
  *
  * Copyright (c) 2013 Péricles Lopes Machado <pericles.raskolnikoff@gmail.com>
  *					  -- Supercritical Simulation Group
@@ -9,9 +9,11 @@
 
 #include "utils.h"
 
+#include <cstdio>
+
 #include <XPLMUtilities.h>
 
-namespace SSG_B748 {
+namespace SSG_PLUGIN {
 //================================================================================================//
 /*
 UTILS
@@ -38,14 +40,23 @@ int ConvertPath(const char * inPath, char * outPath, int outPathMaxLen)
 #if DEBUGMODE
 void debug(const char *message)
 {
-	XPLMDebugString(PluginName
+	XPLMDebugString(PLUGIN_NAME
 					"[DEBUG MESSAGE]:\n");
 	XPLMDebugString(message);
 	XPLMDebugString("\n");
 }
+
+void debug(const char* message, int value)
+{
+	debug(message);
+	char buffer[20];
+	::sprintf(buffer, "<%d>", value);
+	debug(buffer);
+}
+
 #endif
 
-} // namespace SSG_B748
+} // namespace SSG_PLUGIN
 
 
 #if IBM

@@ -1,53 +1,54 @@
 /*
  * PluginDataRef.cpp
  *
- * SSG B748 PLUGIN
+ * SSG PLUGIN
  *
  * Copyright (c) 2013 Péricles Lopes Machado <pericles.raskolnikoff@gmail.com>
  *					  -- Supercritical Simulation Group
  */
+
 #include "utils.h"
 
-#include "PluginDataRef.h"
+#include "PluginManagement.h"
 #include "PluginCallBacks.h"
 #include "PluginData.h"
 
-namespace SSG_B748 {
+namespace SSG_PLUGIN {
 
 //================================================================================================//
 /*
 PLUGIN DATA REF CLASS
 */
 
-PluginDataRef::PluginDataRef()
+PluginManagement::PluginManagement()
 	: XPCProcess()
 {
 }
 
-PluginDataRef::~PluginDataRef()
+PluginManagement::~PluginManagement()
 {
-	PLUGINDEBUGBEGIN("~PluginDataRef");
+	PLUGINDEBUGBEGIN("~PluginManagement");
 
 	unregister();
 
-	PLUGINDEBUGEND("~PluginDataRef");
+	PLUGINDEBUGEND("~PluginManagement");
 }
 
-void PluginDataRef::get()
+void PluginManagement::get()
 {
-	PLUGINDEBUGBEGIN("PluginDataRef::get");
+	PLUGINDEBUGBEGIN("PluginManagement::get");
 
 	m_mach_num = XPLMFindDataRef("sim/flightmodel/misc/machno");
 	m_temp_OAT = XPLMFindDataRef("sim/cockpit2/temperature/outside_air_temp_degc");
 	m_air_speed = XPLMFindDataRef("sim/flightmodel/position/indicated_airspeed");
 	m_ground_speed = XPLMFindDataRef("sim/flightmodel/position/groundspeed");
 
-	PLUGINDEBUGEND("PluginDataRef::get");
+	PLUGINDEBUGEND("PluginManagement::get");
 }
 
-void PluginDataRef::set()
+void PluginManagement::set()
 {
-	PLUGINDEBUGBEGIN("PluginDataRef::set");
+	PLUGINDEBUGBEGIN("PluginManagement::set");
 
 	XPLMSetDataf(m_mach_num, m_mach_num_data);
 	XPLMSetDataf(m_temp_OAT, m_temp_OAT_data);
@@ -60,14 +61,14 @@ void PluginDataRef::set()
 	XPLMSetDataf(m_true_IAS, m_true_IAS_data);
 	XPLMSetDataf(m_true_GNDSPD, m_true_GNDSPD_data);
 
-	PLUGINDEBUGEND("PluginDataRef::set");
+	PLUGINDEBUGEND("PluginManagement::set");
 
 }
 
-void PluginDataRef::create()
+void PluginManagement::create()
 {
 	/* register datarefs */
-	PLUGINDEBUGBEGIN("PluginDataRef::create");
+	PLUGINDEBUGBEGIN("PluginManagement::create");
 
 	m_true_spd = PluginLoadFloat("SSG/AirData/TAS");
 	m_true_mach = PluginLoadFloat("SSG/AirData/mach");
@@ -75,12 +76,12 @@ void PluginDataRef::create()
 	m_true_IAS = PluginLoadFloat("SSG/AirData/IAS");
 	m_true_GNDSPD = PluginLoadFloat("SSG/AirData/GNDSPD");
 
-	PLUGINDEBUGEND("PluginDataRef::create");
+	PLUGINDEBUGEND("PluginManagement::create");
 }
 
-void PluginDataRef::update()
+void PluginManagement::update()
 {
-	PLUGINDEBUGBEGIN("PluginDataRef::update");
+	PLUGINDEBUGBEGIN("PluginManagement::update");
 
 	/*sim data*/
 	m_mach_num_data = XPLMGetDataf(m_mach_num);
@@ -95,12 +96,36 @@ void PluginDataRef::update()
 	m_true_IAS_data	= XPLMGetDataf(m_true_IAS);
 	m_true_GNDSPD_data = XPLMGetDataf(m_true_GNDSPD);
 
-	PLUGINDEBUGEND("PluginDataRef::update");
+	PLUGINDEBUGEND("PluginManagement::update");
 }
 
-void PluginDataRef::unregister()
+#if DEBUGMODE
+static void PrintData(char* buffer, const char* name, float v)
 {
-	PLUGINDEBUGBEGIN("PluginDataRef::unregister");
+	sprintf(buffer, "[PluginManagement::dump] %s = %lf\n", name, v);
+	PLUGINDEBUG(buffer);
+}
+
+void PluginManagement::dump()
+{
+	char buffer[100];
+
+	PrintData(buffer, "m_mach_num_data", m_mach_num_data);
+	PrintData(buffer, "m_temp_OAT_data", m_temp_OAT_data);
+	PrintData(buffer, "m_air_speed_data", m_air_speed_data);
+	PrintData(buffer, "m_ground_speed_data", m_ground_speed_data);
+
+	PrintData(buffer, "m_true_spd_data", m_true_spd_data);
+	PrintData(buffer, "m_true_mach_data", m_true_mach_data);
+	PrintData(buffer, "m_true_OAT_data", m_true_OAT_data);
+	PrintData(buffer, "m_true_IAS_data", m_true_IAS_data);
+	PrintData(buffer, "m_true_GNDSPD_data", m_true_GNDSPD_data);
+}
+#endif
+
+void PluginManagement::unregister()
+{
+	PLUGINDEBUGBEGIN("PluginManagement::unregister");
 
 	if (m_true_spd) {
 		PluginRemoveFloat("SSG/AirData/TAS");
@@ -110,23 +135,26 @@ void PluginDataRef::unregister()
 		PluginRemoveFloat("SSG/AirData/GNDSPD");
 	}
 
-	PLUGINDEBUGEND("PluginDataRef::unregister");
+	PLUGINDEBUGEND("PluginManagement::unregister");
 }
 
-void PluginDataRef::DoProcessing(float inElapsedSinceLastCall,
+void PluginManagement::DoProcessing(float inElapsedSinceLastCall,
 								 float inElapsedTimeSinceLastFlightLoop,
 								 int inCounter)
 {
-	PLUGINDEBUGBEGIN("PluginDataRef::DoProcessing");
+	PLUGINDEBUGBEGIN("PluginManagement::DoProcessing");
 
 	update();
-	m_true_spd_data = 661.47 * m_mach_num_data * sqrt((m_temp_OAT_data + 273.15) / 288.15);
-	m_true_mach_data = m_true_spd_data / 38.967854 * sqrt(m_temp_OAT_data + 273.15);
-	m_true_GNDSPD_data = m_ground_speed_data * 60 * 60 / 1000 * 0.62137119;
+	m_true_spd_data = 661.47f * m_mach_num_data * static_cast<float>(sqrt((m_temp_OAT_data + 273.15f) / 288.15f));
+	m_true_mach_data = m_true_spd_data / 38.967854f * static_cast<float>(sqrt(m_temp_OAT_data + 273.15f));
+	m_true_GNDSPD_data = m_ground_speed_data * 60 * 60 / 1000 * 0.62137119f;
 	m_true_IAS_data = m_air_speed_data;
+	m_true_OAT_data = m_temp_OAT_data;
 	set();
 
-	PLUGINDEBUGEND("PluginDataRef::DoProcessing");
+	PLUGINDEBUGDOOPERATION(update(); dump(););
+
+	PLUGINDEBUGEND("PluginManagement::DoProcessing");
 }
 
-} // namespace SSG_B748
+} // namespace SSG_PLUGIN

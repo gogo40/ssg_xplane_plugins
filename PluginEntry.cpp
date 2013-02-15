@@ -1,7 +1,7 @@
 /*
  * fmc.cpp
  *
- * SSG B748 PLUGIN
+ * SSG PLUGIN
  *
  * Copyright (c) 2013 Péricles Lopes Machado <pericles.raskolnikoff@gmail.com>
  *					  -- Supercritical Simulation Group
@@ -10,19 +10,27 @@
 #include "utils.h"
 #include "PluginEntry.h"
 #include "PluginCallBacks.h"
-#include "PluginDataRef.h"
+#include "PluginManagement.h"
 
-namespace SSG_B748 {
+namespace SSG_PLUGIN {
 
 //================================================================================================//
 /*PLUGIN DATA*/
 /* File to write data to. */
 FILE* g_output_file = 0;
-//================================================================================================//
-/* Data refs we will record. */
-PluginDataRef* g_data_ref = 0;
 
-} // namespace SSG_B748
+void pluginMessage(const char* message) 
+{
+	if (g_output_file) if(message) {
+		fprintf(g_output_file, message);
+	}
+}
+
+//================================================================================================//
+/* Plgugin management object. */
+PluginManagement* g_plugin_mnt = 0;
+
+} // namespace SSG_PLUGIN
 
 //================================================================================================//
 /*PLUGIN ENTRY*/
@@ -33,9 +41,9 @@ PLUGIN_API int XPluginStart(
 {
 	PLUGINDEBUGBEGIN("XPluginStart");
 
-	::strcpy(outName, PluginName);
-	::strcpy(outSig, PluginSig);
-	::strcpy(outDesc, PluginDesc);
+	::strcpy(outName, PLUGIN_NAME);
+	::strcpy(outSig, PLUGIN_SIG);
+	::strcpy(outDesc, PLUGIN_DESC);
 
 	PLUGINDEBUGEND("XPluginStart");
 	return 1;
@@ -46,15 +54,15 @@ PLUGIN_API void	XPluginStop(void)
 	PLUGINDEBUGBEGIN("XPluginStop");
 
 	/* Unregister data */
-	if (SSG_B748::g_data_ref) {
-		delete SSG_B748::g_data_ref;
-		SSG_B748::g_data_ref = 0;
+	if (SSG_PLUGIN::g_plugin_mnt) {
+		delete SSG_PLUGIN::g_plugin_mnt;
+		SSG_PLUGIN::g_plugin_mnt = 0;
 	}
 
 	/* Close the file */
-	if (SSG_B748::g_output_file) {
-		fclose(SSG_B748::g_output_file);
-		SSG_B748::g_output_file = 0;
+	if (SSG_PLUGIN::g_output_file) {
+		fclose(SSG_PLUGIN::g_output_file);
+		SSG_PLUGIN::g_output_file = 0;
 	}
 
 	PLUGINDEBUGEND("XPluginStop");
@@ -64,8 +72,8 @@ PLUGIN_API void XPluginDisable(void)
 {
 	PLUGINDEBUGBEGIN("XPluginDisable");
 
-	if (SSG_B748::g_output_file) {
-		fflush(SSG_B748::g_output_file);
+	if (SSG_PLUGIN::g_output_file) {
+		fflush(SSG_PLUGIN::g_output_file);
 	}
 
 	PLUGINDEBUGEND("XPluginDisable");
@@ -91,13 +99,13 @@ static void PluginInit()
 	PLUGINDEBUG("\tCreating and loading data refs...(PluginInit())\n");
 
 	/* Find the data refs we want to record. */
-	if (!SSG_B748::g_data_ref) {
-		SSG_B748::g_data_ref = new SSG_B748::PluginDataRef;
+	if (!SSG_PLUGIN::g_plugin_mnt) {
+		SSG_PLUGIN::g_plugin_mnt = new SSG_PLUGIN::PluginManagement;
 	}
 
-	SSG_B748::g_data_ref->StartProcessTime(1);
-	SSG_B748::g_data_ref->create();
-	SSG_B748::g_data_ref->get();
+	SSG_PLUGIN::g_plugin_mnt->StartProcessTime(4.0);
+	SSG_PLUGIN::g_plugin_mnt->create();
+	SSG_PLUGIN::g_plugin_mnt->get();
 
 	PLUGINDEBUG("\tCreating and loading data refs...(PluginInit())[OK]\n");
 
@@ -113,14 +121,17 @@ static void PluginInit()
 	 * the X-System directory.  Open the file.
 	 */
 	XPLMGetSystemPath(outputPath);
-	strcat(outputPath, PluginNameLog);
+	strcat(outputPath, PLUGIN_NAME_LOG);
 
 	PLUGINDEBUG("\tEnabling plugin...(PluginInit())\n");
 	//XPLMEnablePlugin(XPLMGetMyID());
+	PLUGINDEBUGPRINTINT("Plugin "
+						PLUGIN_NAME
+						" ID:", XPLMGetMyID());
 	PLUGINDEBUG("\tEnabling plugin...(PluginInit())[OK]\n");
 
 	#if APL && __MACH__
-	Result = SSG_B748::ConvertPath(outputPath, outputPath2, sizeof(outputPath));
+	Result = SSG_PLUGIN::ConvertPath(outputPath, outputPath2, sizeof(outputPath));
 	if (Result == 0) {
 		strcpy(outputPath, outputPath2);
 	} else {
@@ -133,8 +144,8 @@ static void PluginInit()
 
 	#if DEBUGMODE
 	PLUGINDEBUG("\tOpenning plugin output file...(PluginInit())\n");
-	if (!SSG_B748::g_output_file) {
-		SSG_B748::g_output_file = fopen(outputPath, "w");
+	if (!SSG_PLUGIN::g_output_file) {
+		SSG_PLUGIN::g_output_file = fopen(outputPath, "w");
 	}
 	PLUGINDEBUG("\tOpenning plugin output file...(PluginInit())[OK]\n");
 	#endif
@@ -148,16 +159,16 @@ static void PluginInit()
 
 	mySubMenuItem = XPLMAppendMenuItem(
 						XPLMFindPluginsMenu(),	/* Put in plugins menu */
-						PluginName,				/* Item Title */
+						PLUGIN_NAME,				/* Item Title */
 						0,						/* Item Ref */
 						1);						/* Force English */
 
 	//myMenu =
 			XPLMCreateMenu(
-						PluginName,
+						PLUGIN_NAME,
 						XPLMFindPluginsMenu(),
 						mySubMenuItem,							/* Menu Item to attach to. */
-						SSG_B748::PluginMenuHandlerCallback,	/* The handler */
+						SSG_PLUGIN::PluginMenuHandlerCallback,	/* The handler */
 						0);										/* Handler Ref */
 
 	PLUGINDEBUG("\tCreating Menu item...(PluginInit())[OK]\n");
@@ -180,8 +191,9 @@ PLUGIN_API void XPluginReceiveMessage(
 				PLUGINDEBUG("Message XPML_MSG_PLANE_LOADED received"
 							"...(XPluginReceiveMessage())\n");
 				PLUGINDEBUG("Call PluginInit()...(XPluginReceiveMessage())\n");
-
-				PluginInit();
+				if (!SSG_PLUGIN::g_plugin_mnt) {
+					PluginInit();
+				}
 
 				PLUGINDEBUG("Call PluginInit()...(XPluginReceiveMessage())[OK]\n");
 			break;

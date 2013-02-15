@@ -1,7 +1,7 @@
 /*
  * PluginCallBacks.cpp
  *
- * SSG B748 PLUGIN
+ * SSG PLUGIN
  *
  * Copyright (c) 2013 Péricles Lopes Machado <pericles.raskolnikoff@gmail.com>
  *					  -- Supercritical Simulation Group
@@ -9,13 +9,13 @@
 
 #include "utils.h"
 #include "PluginCallBacks.h"
-#include "PluginDataRef.h"
+#include "PluginManagement.h"
 
 //================================================================================================//
 /*Plugin callback*/
 
 
-namespace SSG_B748 {
+namespace SSG_PLUGIN {
 
 void	PluginMenuHandlerCallback(
 		void* inMenuRef,
@@ -33,7 +33,7 @@ void	PluginMenuHandlerCallback(
 
 		/* Check to see if the plugin is us.  If so, don't
 	   * disable ourselves! */
-		PLUGINDEBUGDOOPERATION(sprintf(str,"plugin=%d,me=%d\n",plugin, me));
+		PLUGINDEBUGDOOPERATION(sprintf(str,"plugin=%d, me=%d\n",plugin, me));
 		PLUGINDEBUG(str);
 
 		if (plugin != me) {
@@ -54,7 +54,7 @@ void PluginDataChangedCallback(void* refcon)
 	PLUGINDEBUGBEGIN("PluginDataChangedCallback");
 
 	if (refcon) {
-		PluginDataRef* m_data_ref = reinterpret_cast<PluginDataRef*>(refcon);
+		PluginManagement* m_data_ref = reinterpret_cast<PluginManagement*>(refcon);
 		m_data_ref->update();
 	}
 
@@ -81,4 +81,5 @@ void  PluginSetFloat(void* inRefcon, float inValue)
 	PLUGINDEBUGEND("PluginSetFloat");
 }
 
-} //namespace SSG_B748
+} //namespace SSG_PLUGIN
+

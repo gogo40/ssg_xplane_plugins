@@ -1,7 +1,7 @@
 /*
  * PluginCallBacks.h
  *
- * SSG B748 PLUGIN
+ * SSG PLUGIN
  *
  * Copyright (c) 2013 Péricles Lopes Machado <pericles.raskolnikoff@gmail.com>
  *					  -- Supercritical Simulation Group
@@ -22,19 +22,17 @@
 #include <XPLMMenus.h>
 
 
-
+//================================================================================================//
 /*PLUGIN CALLBACKS */
 
-
-namespace SSG_B748 {
-//================================================================================================//
+namespace SSG_PLUGIN {
 
 void PluginMenuHandlerCallback(void*, void*);
 void PluginDataChangedCallback(void*);
 float PluginGetFloat(void*);
 void  PluginSetFloat(void*, float);
 
-} // namespace SSG_B748
+} // namespace SSG_PLUGIN
 
 #endif //_PLUGINCALLBACKS_H_
 
